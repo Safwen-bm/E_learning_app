@@ -1,12 +1,9 @@
-import { GetServerSideProps } from 'next';
 import { auth } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 import { File } from 'lucide-react';
-
 import { getChapter } from '@/actions/get-chapter';
 import { Banner } from '@/components/banner';
 import { Separator } from '@/components/ui/separator';
-
 import { VideoPlayer } from './_components/video-player';
 import { CourseEnrollButton } from './_components/course-enroll-button';
 import { CourseProgressButton } from './_components/course-progress-button';
@@ -23,16 +20,30 @@ type ChapterIdPageProps = {
   params: { courseId: string; chapterId: string };
 };
 
-const ChapterIdPage = ({
-  chapter,
-  course,
-  muxData,
-  attachments,
-  nextChapter,
-  userProgress,
-  purchase,
+const ChapterIdPage = async ({
   params,
-}: ChapterIdPageProps) => {
+}: {
+  params: { courseId: string; chapterId: string };
+}) => {
+  // Fetch user auth information
+  const { userId } = await auth();
+  if (!userId) {
+    redirect('/');
+  }
+
+  // Fetch the necessary data
+  const { chapter, course, muxData, attachments, nextChapter, userProgress, purchase } =
+    await getChapter({
+      userId,
+      chapterId: Array.isArray(params.chapterId) ? params.chapterId[0] : params.chapterId,
+      courseId: Array.isArray(params.courseId) ? params.courseId[0] : params.courseId,
+    });
+
+  // Redirect if chapter or course is not found
+  if (!chapter || !course) {
+    redirect('/');
+  }
+
   const isLocked = !chapter.isFree && !purchase;
   const completeOnEnd = !!purchase && !userProgress?.isCompleted;
 
@@ -103,39 +114,6 @@ const ChapterIdPage = ({
       </div>
     </div>
   );
-};
-
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-  const { userId } = await auth();
-
-  if (!userId) {
-    return { redirect: { destination: '/', permanent: false } };
-  }
-
-  const { chapter, course, muxData, attachments, nextChapter, userProgress, purchase } =
-  await getChapter({
-    userId,
-    chapterId: Array.isArray(params?.chapterId) ? params.chapterId[0] : params?.chapterId!,
-    courseId: Array.isArray(params?.courseId) ? params.courseId[0] : params?.courseId!,
-  });
-
-
-  if (!chapter || !course) {
-    return { redirect: { destination: '/', permanent: false } };
-  }
-
-  return {
-    props: {
-      chapter,
-      course,
-      muxData,
-      attachments,
-      nextChapter,
-      userProgress,
-      purchase,
-      params,
-    },
-  };
 };
 
 export default ChapterIdPage;
