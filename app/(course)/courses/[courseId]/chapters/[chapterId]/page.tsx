@@ -13,34 +13,26 @@ import { CourseProgressButton } from './_components/course-progress-button';
 import Preview from '@/components/preview';
 
 type ChapterIdPageProps = {
+  chapter: any;
+  course: any;
+  muxData: any;
+  attachments: any[];
+  nextChapter: any;
+  userProgress: any;
+  purchase: any;
   params: { courseId: string; chapterId: string };
 };
 
-const ChapterIdPage = async ({ params }: ChapterIdPageProps) => {
-  const { userId } = await auth();
-
-  if (!userId) {
-    return redirect('/');
-  }
-
-  const {
-    chapter,
-    course,
-    muxData,
-    attachments,
-    nextChapter,
-    userProgress,
-    purchase,
-  } = await getChapter({
-    userId,
-    chapterId: params.chapterId,
-    courseId: params.courseId,
-  });
-
-  if (!chapter || !course) {
-    return redirect('/');
-  }
-
+const ChapterIdPage = ({
+  chapter,
+  course,
+  muxData,
+  attachments,
+  nextChapter,
+  userProgress,
+  purchase,
+  params,
+}: ChapterIdPageProps) => {
   const isLocked = !chapter.isFree && !purchase;
   const completeOnEnd = !!purchase && !userProgress?.isCompleted;
 
@@ -111,6 +103,39 @@ const ChapterIdPage = async ({ params }: ChapterIdPageProps) => {
       </div>
     </div>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+  const { userId } = await auth();
+
+  if (!userId) {
+    return { redirect: { destination: '/', permanent: false } };
+  }
+
+  const { chapter, course, muxData, attachments, nextChapter, userProgress, purchase } =
+  await getChapter({
+    userId,
+    chapterId: Array.isArray(params?.chapterId) ? params.chapterId[0] : params?.chapterId!,
+    courseId: Array.isArray(params?.courseId) ? params.courseId[0] : params?.courseId!,
+  });
+
+
+  if (!chapter || !course) {
+    return { redirect: { destination: '/', permanent: false } };
+  }
+
+  return {
+    props: {
+      chapter,
+      course,
+      muxData,
+      attachments,
+      nextChapter,
+      userProgress,
+      purchase,
+      params,
+    },
+  };
 };
 
 export default ChapterIdPage;
