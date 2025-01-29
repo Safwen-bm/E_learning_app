@@ -1,4 +1,6 @@
 import { Chapter, Course, UserProgress } from "@prisma/client";
+import { Logo } from '../../../../(dashboard)/_components/logo';
+
 
 import { NavbarRoutes } from "@/components/navbar-routes";
 import { CourseMobileSidebar } from "./course-mobile-sidebar";
@@ -22,6 +24,9 @@ export const CourseNavbar = ({
                 course={course}
                 progressCount={progressCount}
             />
+            <div className="flex-1 flex justify-center">
+                <Logo /> 
+            </div>
             <NavbarRoutes />
         </div>
     );

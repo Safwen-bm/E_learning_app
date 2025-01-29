@@ -42,9 +42,9 @@ export const CourseSidebar = async ({
                 </h1>
                 {purchase && (
                     <div className="mt-10">
-                        <CourseProgress 
-                        variant="success"
-                        value={progressCount}
+                        <CourseProgress
+                            variant="success"
+                            value={progressCount}
                         />
                     </div>
                 )}
@@ -61,6 +61,15 @@ export const CourseSidebar = async ({
                     />
                 ))}
             </div>
+            <div className="mt-auto p-4 flex justify-center items-center">
+                <img
+                    src="/logo.png"
+                    alt="SafOne Logo"
+                    className="max-w-[200px] max-h-[200px] rounded-lg shadow-lg transition-transform transform hover:scale-105"
+                />
+            </div>
         </div>
+
+
     )
 }
