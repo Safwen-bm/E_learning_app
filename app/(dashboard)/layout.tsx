@@ -1,26 +1,32 @@
 import { Navbar } from "./_components/navbar";
 import { Sidebar } from "./_components/sidebar";
-import { ReactNode } from "react"; 
-import "../globals.css";
 
-interface DashboardLayoutProps {
-    children: ReactNode; 
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="h-screen flex overflow-hidden bg-background">
+      {/* Desktop Sidebar - fixed on left, hidden on mobile */}
+      <aside className="hidden md:flex md:w-72 md:flex-col">
+        <Sidebar />
+      </aside>
+
+      {/* Main column: Navbar + Content */}
+      <div className="flex flex-1 flex-col overflow-hidden">
+        {/* Fixed Navbar */}
+        <header className="border-b border-border/40 bg-background/80 backdrop-blur-xl">
+          <Navbar />
+        </header>
+
+        {/* Scrollable main content with padding */}
+        <main className="flex-1 overflow-y-auto">
+          <div className="container mx-auto px-6 py-8">
+            {children}
+          </div>
+        </main>
+      </div>
+    </div>
+  );
 }
-
-const DashboardLayout = ({ children }: DashboardLayoutProps) => { 
-    return ( 
-        <div className="h-full flex flex-col"> 
-            <div className="h-[80px] md:pl-56 fixed inset-x-0 top-0 w-full z-50"> 
-                <Navbar />
-            </div>
-            <div className="hidden md:flex h-full w-56 flex-col fixed inset-y-0 z-50">
-                <Sidebar />
-            </div>
-            <main className="md:pl-56 h-full pt-[80px]"> 
-                {children}
-            </main>
-        </div>
-    );
-}
-
-export default DashboardLayout;

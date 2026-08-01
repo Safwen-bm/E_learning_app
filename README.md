@@ -1,36 +1,68 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AcademyX
 
-## Getting Started
+**Full-stack e-learning platform with course creation, video streaming, and paid enrollment.**
 
-First, run the development server:
+AcademyX lets teachers build and publish multi-chapter video courses, and students purchase and track progress through them — with a full teacher dashboard for course management.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+---
+
+## 🚀 What it does
+
+- **Teacher side**: create courses, add chapters, upload videos, attach downloadable resources, reorder chapters via drag-and-drop, publish/unpublish
+- **Student side**: browse and purchase courses, watch chapter videos, track completion progress per chapter and per course
+- Role-based access (teacher vs. student) via Clerk authentication
+- Video upload and adaptive streaming through Mux
+- Rich text course/chapter descriptions via a WYSIWYG editor
+- Stripe checkout for course purchases
+- File uploads (images, PDFs, attachments) via UploadThing/Cloudinary
+- Teacher analytics dashboard (revenue, sales) with charts
+
+---
+
+## 🧱 Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Framework | Next.js 15 (App Router), TypeScript |
+| UI | Tailwind CSS, shadcn/ui, Radix UI |
+| Auth | Clerk |
+| Database | PostgreSQL, Prisma ORM |
+| Video | Mux (upload, encoding, streaming player) |
+| Payments | Stripe |
+| File Uploads | UploadThing, Cloudinary |
+| Editor | TipTap / React Quill |
+| Charts | Recharts |
+
+---
+
+## 🏗️ Architecture
+
+Single Next.js app using the App Router, with route groups separating concerns:
+
+```
+app/
+├── (dashboard)/    # Teacher dashboard — course management, analytics
+├── (course)/       # Student-facing course player — chapters, video, progress
+└── api/            # Route handlers — uploads, webhooks (Stripe, Mux)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Server Components handle data fetching directly via Prisma; Server Actions handle mutations (progress updates, course publishing). Stripe and Mux webhooks keep purchase status and video processing state in sync with the database.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📄 License
 
-## Learn More
+**All rights reserved.**
 
-To learn more about Next.js, take a look at the following resources:
+This project and its source code are proprietary. No part of this repository may be copied, modified, distributed, or used in any form without explicit written permission from the author.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+© Safwen Ben Mabrouk
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 📬 Contact
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Safwen Ben Mabrouk** — Full-Stack Software Engineer
+- Email: safwenbenmabrouk@gmail.com
+- LinkedIn: [linkedin.com/in/safwen-ben-mabrouk](https://linkedin.com/in/safwen-ben-mabrouk)
+- GitHub: [@Safwen-bm](https://github.com/Safwen-bm)

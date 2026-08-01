@@ -4,38 +4,23 @@ import { cn } from "@/lib/utils";
 interface CourseProgressProps {
     value: number;
     variant?: "default" | "success";
-    size?: "default" | "sm";
-};
-
-const colorByVariant = {
-    default: "text-sky-700",
-    success: "text-emerald-700",
-}
-
-const sizeByVariant = {
-    default: "text-sm",
-    sm: "text-xs",
+    size?: "default" | "lg";
 }
 
 export const CourseProgress = ({
     value,
-    variant,
-    size,
+    variant = "default",
+    size = "default",
 }: CourseProgressProps) => {
     return (
-        <div>
-            <Progress
-                className="h-2"
-                value={value}
-                variant={variant}
-            />
+        <div className="space-y-3">
+            <Progress value={value} variant={variant} className="h-4" />
             <p className={cn(
-                "font-medium mt-2 text-sky-700",
-                colorByVariant[variant || "default"],
-                sizeByVariant[size || "default"],
-            )} >
+                "font-bold text-lg",
+                variant === "success" ? "text-emerald-600 dark:text-emerald-400" : "text-primary"
+            )}>
                 {Math.round(value)}% Complete
             </p>
         </div>
-    )
-}
+    );
+};

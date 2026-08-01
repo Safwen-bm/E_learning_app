@@ -37,9 +37,10 @@ export const CourseSidebar = async ({
     return (
         <div className="h-full border-r flex flex-col overflow-y-auto shadow-sm">
             <div className="p-8 flex flex-col border-b">
-                <h1 className="font-semibold">
+                <h1 className="text-xl font-extrabold text-gray-900 uppercase tracking-wide">
                     {course.title}
                 </h1>
+
                 {purchase && (
                     <div className="mt-10">
                         <CourseProgress
@@ -61,15 +62,6 @@ export const CourseSidebar = async ({
                     />
                 ))}
             </div>
-            <div className="mt-auto p-4 flex justify-center items-center">
-                <img
-                    src="/logo.png"
-                    alt="SafOne Logo"
-                    className="max-w-[200px] max-h-[200px] rounded-lg shadow-lg transition-transform transform hover:scale-105"
-                />
-            </div>
         </div>
-
-
-    )
-}
+    );
+};

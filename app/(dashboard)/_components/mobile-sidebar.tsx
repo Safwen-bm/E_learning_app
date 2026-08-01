@@ -1,22 +1,23 @@
 import { Menu } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { DialogTitle } from "@radix-ui/react-dialog";
+import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import VisuallyHidden from "./VisuallyHidden";
-import { Sidebar } from "./sidebar"; // Make sure this import path is correct
-import "../../globals.css";
+import { Sidebar } from "./sidebar";
 
 export const MobileSidebar = () => {
-    return (
-        <Sheet>
-            <SheetTrigger className="md:hidden pr-4 hover:opacity-75 transition">
-                <Menu />
-            </SheetTrigger>
-            <SheetContent side="left" className="p-0 bg-white shadow-lg transition-transform duration-300 ease-in-out">
-                <DialogTitle>
-                    <VisuallyHidden>Mobile Sidebar</VisuallyHidden>
-                </DialogTitle>
-                <Sidebar />
-            </SheetContent>
-        </Sheet>
-    );
+  return (
+    <Sheet>
+      <SheetTrigger className="md:hidden pr-4 hover:opacity-80 transition">
+        <Menu className="h-7 w-7 text-foreground/80" />
+      </SheetTrigger>
+      <SheetContent side="left" className="p-0 w-72 bg-white">
+        <SheetTitle>
+          <VisuallyHidden>Main Navigation</VisuallyHidden>
+        </SheetTitle>
+        <SheetDescription>
+          <VisuallyHidden>AcademyX mobile menu</VisuallyHidden>
+        </SheetDescription>
+        <Sidebar />
+      </SheetContent>
+    </Sheet>
+  );
 };

@@ -1,12 +1,11 @@
 import { NavbarRoutes } from "@/components/navbar-routes";
 import { MobileSidebar } from "./mobile-sidebar";
-import "../../globals.css";
 
 export const Navbar = () => {
-    return ( 
-        <div className="p-4 h-full flex items-center bg-[#f1f6fb] shadow-md">
-            <MobileSidebar />
-            <NavbarRoutes />
-        </div>
-    );
+  return (
+    <div className="relative flex items-center h-20 px-6 border-b border-border/40 bg-background/80 backdrop-blur-xl shadow-lg">
+      <MobileSidebar />
+      <NavbarRoutes />
+    </div>
+  );
 };

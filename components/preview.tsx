@@ -16,6 +16,7 @@ const Preview = ({ value }: PreviewProps) => {
     extensions: [StarterKit],
     content: value,
     editable: false,
+    immediatelyRender: false,
   });
 
   return <EditorContent editor={editor} />;

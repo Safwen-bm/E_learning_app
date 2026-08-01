@@ -1,18 +1,17 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import React from "react";
 import { cn } from "@/lib/utils";
-import "../../globals.css";
+import { LucideIcon } from "lucide-react";
 
 interface SidebarItemProps {
-    icon: React.ReactNode;  
+    icon: LucideIcon;  // ← Only LucideIcon (all your icons are from lucide-react)
     label: string; 
     href: string; 
 }
 
 export const SidebarItem = ({
-    icon,
+    icon: Icon,
     label,
     href,
 }: SidebarItemProps) => {
@@ -33,21 +32,20 @@ export const SidebarItem = ({
             onClick={onClick}
             type="button"
             className={cn(
-                "flex items-center gap-x-2 text-slate-500 text-sm font-[500] pl-6 pr-6 py-2 transition-all hover:text-slate-600 hover:bg-slate-300/20",  
-                isActive ? "text-sky-700 bg-sky-200/20 hover:bg-sky-200/20" : ""
+                "flex items-center gap-x-3 text-foreground/70 text-md font-medium pl-6 pr-8 py-4 rounded-xl transition-all duration-300",
+                "hover:text-foreground hover:bg-accent/50 hover:shadow-md hover:scale-105",
+                isActive && "text-primary bg-primary/10 shadow-lg scale-105 border-l-4 border-primary"
             )}
-            aria-label={label}  // Accessibility
         >
-            <div className="flex items-center gap-x-2">
-                {icon}
-                <span>{label}</span> {/* Wrap label in a span for better semantics */}
+            <div className="flex items-center gap-x-3">
+                <div className={cn(
+                    "transition-colors",
+                    isActive ? "text-primary" : ""
+                )}>
+                    <Icon className="h-5 w-5" /> 
+                </div>
+                <span className="tracking-wide">{label}</span>
             </div>
-            <div
-                className={cn(
-                    "ml-auto opacity-0 border-2 border-sky-700 h-full transition-all",
-                    isActive ? "opacity-100" : ""
-                )}
-            />
         </button>
     );
 };

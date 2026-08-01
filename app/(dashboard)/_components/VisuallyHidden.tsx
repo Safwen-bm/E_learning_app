@@ -1,5 +1,3 @@
-import "../../globals.css";
-
 
 const VisuallyHidden = ({ children }: { children: React.ReactNode }) => {
     return (

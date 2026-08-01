@@ -10,18 +10,20 @@ import { CourseProgressButton } from './_components/course-progress-button';
 import Preview from '@/components/preview';
 
 interface ChapterIdPageProps {
-  params: { courseId: string; chapterId: string };
+  params: Promise<{ courseId: string; chapterId: string }>;  // ← Promise
 }
 
 const ChapterIdPage = async ({ params }: ChapterIdPageProps) => {
   const { userId } = await auth();
   if (!userId) redirect('/');
 
+  const resolvedParams = await params;
+
   const { chapter, course, muxData, attachments, nextChapter, userProgress, purchase } =
     await getChapter({
       userId,
-      chapterId: params.chapterId,
-      courseId: params.courseId,
+      chapterId: resolvedParams.chapterId,
+      courseId: resolvedParams.courseId,
     });
 
   if (!chapter || !course) redirect('/');
@@ -40,9 +42,9 @@ const ChapterIdPage = async ({ params }: ChapterIdPageProps) => {
       <div className="flex flex-col max-w-4xl mx-auto pb-20">
         <div className="p-4">
           <VideoPlayer
-            chapterId={params.chapterId}
+            chapterId={resolvedParams.chapterId}
             title={chapter.title}
-            courseId={params.courseId}
+            courseId={resolvedParams.courseId}
             nextChapterId={nextChapter?.id}
             playbackId={muxData?.playbackId || ''}
             isLocked={isLocked}
@@ -54,13 +56,13 @@ const ChapterIdPage = async ({ params }: ChapterIdPageProps) => {
             <h2 className="text-2xl font-semibold mb-2">{chapter.title}</h2>
             {purchase ? (
               <CourseProgressButton
-                chapterId={params.chapterId}
-                courseId={params.courseId}
+                chapterId={resolvedParams.chapterId}
+                courseId={resolvedParams.courseId}
                 nextChapterId={nextChapter?.id}
                 isCompleted={!!userProgress?.isCompleted}
               />
             ) : (
-              <CourseEnrollButton courseId={params.courseId} price={course.price || 0} />
+              <CourseEnrollButton courseId={resolvedParams.courseId} price={course.price || 0} />
             )}
           </div>
           <Separator />

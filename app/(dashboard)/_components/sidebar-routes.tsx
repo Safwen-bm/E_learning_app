@@ -1,37 +1,30 @@
 "use client";
 
-import { BarChart, List, Compass, Layout } from "lucide-react";
+import { BarChart, Compass, Layout, ListChecks } from "lucide-react";
 import { SidebarItem } from "./sidebar-item";
 import { usePathname } from "next/navigation";
-import "../../globals.css";
 
-interface Route {
-    icon: React.ReactNode;  
-    label: string;
-    href: string; 
-}
-
-const guestRoutes: Route[] = [
+const guestRoutes = [
     {
-        icon: <Layout size={22} className="text-slate-500" />,
+        icon: Layout, 
         label: "Dashboard",
         href: "/",
     },
     {
-        icon: <Compass size={22} className="text-slate-500" />,
+        icon: Compass,
         label: "Browse",
         href: "/search",
     },
 ];
 
-const teacherRoutes: Route[] = [
+const teacherRoutes = [
     {
-        icon: <List size={22} className="text-slate-500" />,
+        icon: ListChecks,
         label: "Courses",
         href: "/teacher/courses",
     },
     {
-        icon: <BarChart size={22} className="text-slate-500" />,
+        icon: BarChart,
         label: "Analytics",
         href: "/teacher/analytics",
     },
@@ -43,7 +36,7 @@ export const SidebarRoutes = () => {
     const routes = isTeacherPage ? teacherRoutes : guestRoutes;
 
     return (
-        <div className="flex flex-col w-full">
+        <div className="flex flex-col w-full space-y-1 mt-6">
             {routes.map((route) => (
                 <SidebarItem 
                     key={route.href}

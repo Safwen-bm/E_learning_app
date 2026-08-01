@@ -1,23 +1,19 @@
 import { Logo } from './logo';
 import { SidebarRoutes } from "./sidebar-routes";
-import "../../globals.css";
 
 export const Sidebar = () => {
     return (
-        <div className="h-screen flex flex-col bg-[#f1f6fb] text-gray-800">
-            <div className="p-6 flex justify-center">
+        <div className="flex h-screen flex-col w-72 overflow-hidden bg-background/60 backdrop-blur-2xl border-r border-border/50 shadow-2xl">
+            {/* Top Logo */}
+            <div className="p-8 flex justify-center border-b border-border/20">
                 <Logo />
             </div>
-            <div className="flex-1 overflow-y-auto">
+
+            {/* Navigation Items */}
+            <div className="flex-1 overflow-y-auto px-4 py-6">
                 <SidebarRoutes />
             </div>
-            <div className="mt-auto p-4 flex justify-center items-center">
-                <img
-                    src="/logo.png"
-                    alt="SafOne Logo"
-                    className="max-w-[200px] max-h-[200px] rounded-lg shadow-lg transition-transform transform hover:scale-105"
-                />
-            </div>
+
         </div>
     );
 };
