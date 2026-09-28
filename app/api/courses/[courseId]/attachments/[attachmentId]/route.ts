@@ -4,37 +4,38 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { isTeacher } from "@/lib/teacher";
 
-export async function DELETE (
+export async function DELETE(
     req: Request,
-    { params }: { params: { courseId: string, attachmentId: string } }
-){
+    { params }: { params: Promise<{ courseId: string, attachmentId: string }> }
+) {
     try {
+        const { courseId, attachmentId } = await params;
         const { userId } = await auth();
 
-        if(!userId || !isTeacher(userId)) {
+        if (!userId || !isTeacher(userId)) {
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
         const courseOwner = await db.course.findUnique({
             where: {
-                id: params.courseId,
+                id: courseId,
                 userId: userId
             }
         });
 
-        if(!courseOwner) {
+        if (!courseOwner) {
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
         const attachment = await db.attachment.delete({
             where: {
-                courseId: params.courseId,
-                id: params.attachmentId,
+                courseId: courseId,
+                id: attachmentId,
             }
         });
-        
+
         return NextResponse.json(attachment);
-    } catch (error){
+    } catch (error) {
         console.log("ATTACHMENT_ID", error);
         return new NextResponse("Internal Error", { status: 500 });
     }

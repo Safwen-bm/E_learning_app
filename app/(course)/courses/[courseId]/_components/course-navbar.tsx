@@ -1,5 +1,5 @@
 import { Chapter, Course, UserProgress } from "@prisma/client";
-import { Logo } from "../../../../(dashboard)/_components/logo";
+import { Logo } from "@/app/(dashboard)/_components/logo";
 
 import { NavbarRoutes } from "@/components/navbar-routes";
 import { CourseMobileSidebar } from "./course-mobile-sidebar";
@@ -18,8 +18,7 @@ export const CourseNavbar = ({
     progressCount,
 }: CourseNavbarProps) => {
     return (
-        <div className="relative p-4 border-b h-full flex items-center bg-white shadow-sm">
-            
+        <div className="relative p-4 border-b border-border h-full flex items-center bg-background">
             {/* Left */}
             <div className="flex items-center">
                 <CourseMobileSidebar

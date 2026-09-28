@@ -4,12 +4,12 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const backgroundVariants = cva(
-    "rouded-full flex items-center justify-center",
+    "rounded-full flex items-center justify-center",
     {
         variants: {
             variant: {
-                default: "bg-sky-100",
-                success: "bg-emerald-100",
+                default: "bg-[hsl(var(--accent))]",
+                success: "bg-[hsl(var(--success))]",
             },
             size: {
                 default: "p-2",
@@ -28,8 +28,8 @@ const iconVariants = cva(
     {
         variants: {
             variant: {
-                default: "text-sky-700",
-                success: "text-emerald-700",
+                default: "text-[hsl(var(--accent-foreground))]",
+                success: "text-[hsl(var(--success-foreground))]",
             },
             size: {
                 default: "h-8 w-8",

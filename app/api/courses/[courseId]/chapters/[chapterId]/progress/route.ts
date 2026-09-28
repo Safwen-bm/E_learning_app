@@ -3,11 +3,12 @@ import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 
-export async function PUT (
+export async function PUT(
     req: Request,
-    { params }: { params: { courseId: string; chapterId: string } }
+    { params }: { params: Promise<{ courseId: string; chapterId: string }> }
 ) {
     try {
+        const { chapterId } = await params;
         const { userId } = await auth();
         const { isCompleted } = await req.json();
 
@@ -19,7 +20,7 @@ export async function PUT (
             where: {
                 userId_chapterId: {
                     userId,
-                    chapterId: params.chapterId,
+                    chapterId: chapterId,
                 }
             },
             update: {
@@ -27,14 +28,13 @@ export async function PUT (
             },
             create: {
                 userId,
-                chapterId: params.chapterId,
+                chapterId: chapterId,
                 isCompleted,
             }
         })
 
-        
         return NextResponse.json(userProgress);
-    } catch (error){
+    } catch (error) {
         console.log("[CHAPTER_ID_PROGRESS", error);
         return new NextResponse("Internarl Error", { status: 500 });
     }

@@ -1,9 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
-import { BookOpen } from "lucide-react";
+import { BookOpen, CheckCircle2 } from "lucide-react";
 
 import { formatPrice } from "@/lib/format";
-import { CourseProgress } from "@/components/course-progress";
+import { cn } from "@/lib/utils";
+import { Progress } from "@/components/ui/progress";
 
 interface CourseCardProps {
     id: string;
@@ -24,60 +25,85 @@ export const CourseCard = ({
     progress,
     category,
 }: CourseCardProps) => {
+    const chaptersLabel = `${chaptersLength} ${chaptersLength === 1 ? "chapter" : "chapters"}`;
+    const isCompleted = progress === 100;
+
     return (
-        <Link href={`/courses/${id}`} className="block h-full">
-            <div className="flex flex-col h-full bg-white dark:bg-gray-950 rounded-3xl overflow-hidden border border-gray-200 dark:border-gray-800 transition-all duration-500 hover:border-primary/40 hover:shadow-2xl">
-                {/* Large Thumbnail */}
-                <div className="relative aspect-[3/2] overflow-hidden">
-                    <Image
-                        fill
-                        src={imageUrl}
-                        alt={title}
-                        className="object-cover transition-transform duration-700 hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                    
-                    {/* Category overlay */}
-                    <div className="absolute bottom-4 left-4">
-                        <span className="px-4 py-2 bg-white/90 dark:bg-black/80 backdrop-blur-sm rounded-full text-sm font-semibold text-foreground">
-                            {category}
-                        </span>
-                    </div>
+        <Link
+            href={`/courses/${id}`}
+            className="group block h-full rounded-xl ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+        >
+            <div className="flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card transition-colors group-hover:border-foreground/30">
+                {/* Thumbnail */}
+                <div className="relative aspect-video overflow-hidden bg-muted">
+                    {imageUrl ? (
+                        <Image
+                            fill
+                            src={imageUrl}
+                            alt={title}
+                            sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                            className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                        />
+                    ) : (
+                        <div className="flex h-full items-center justify-center text-muted-foreground">
+                            <BookOpen className="h-8 w-8" />
+                        </div>
+                    )}
                 </div>
 
-                {/* Spacious Content */}
-                <div className="flex-1 p-8 flex flex-col justify-between space-y-6">
-                    <div className="space-y-4">
-                        {/* Title */}
-                        <h3 className="text-2xl font-bold text-foreground line-clamp-3 leading-tight">
-                            {title}
-                        </h3>
+                {/* Content */}
+                <div className="flex flex-1 flex-col p-4">
+                    <p className="text-xs font-medium text-muted-foreground">
+                        {category}
+                    </p>
+                    <h3 className="mt-1 line-clamp-2 text-base font-semibold leading-snug text-foreground">
+                        {title}
+                    </h3>
 
-                        {/* Chapters */}
-                        <div className="flex items-center gap-3 text-muted-foreground">
-                            <BookOpen className="h-5 w-5" />
-                            <span className="text-base">
-                                {chaptersLength} {chaptersLength === 1 ? "chapter" : "chapters"}
-                            </span>
-                        </div>
-                    </div>
-
-                    {/* Progress or Price */}
-                    <div className="space-y-4">
+                    <div className="mt-auto pt-4">
                         {progress !== null ? (
-                            <CourseProgress
-                                value={progress}
-                                size="lg"
-                                variant={progress === 100 ? "success" : "default"}
-                            />
+                            <div className="space-y-2">
+                                <Progress
+                                    value={progress}
+                                    variant={isCompleted ? "success" : "default"}
+                                    className="h-1.5"
+                                />
+                                <div className="flex items-center justify-between text-xs">
+                                    <span
+                                        className={cn(
+                                            "flex items-center gap-1 font-medium",
+                                            isCompleted
+                                                ? "text-[hsl(var(--success-foreground))]"
+                                                : "text-foreground"
+                                        )}
+                                    >
+                                        {isCompleted ? (
+                                            <>
+                                                <CheckCircle2 className="h-3.5 w-3.5" />
+                                                Completed
+                                            </>
+                                        ) : (
+                                            `${Math.round(progress)}% complete`
+                                        )}
+                                    </span>
+                                    <span className="text-muted-foreground">
+                                        {chaptersLabel}
+                                    </span>
+                                </div>
+                            </div>
                         ) : (
                             <div className="flex items-center justify-between">
-                                <p className="text-3xl font-bold text-foreground">
-                                    {formatPrice(price)}
-                                </p>
-                                {price === 0 && (
-                                    <span className="px-4 py-2 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 rounded-full font-medium">
+                                <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                                    <BookOpen className="h-3.5 w-3.5" />
+                                    {chaptersLabel}
+                                </span>
+                                {price === 0 ? (
+                                    <span className="rounded-md bg-[hsl(var(--success))] px-2 py-0.5 text-xs font-medium text-[hsl(var(--success-foreground))]">
                                         Free
+                                    </span>
+                                ) : (
+                                    <span className="text-base font-semibold text-foreground">
+                                        {formatPrice(price)}
                                     </span>
                                 )}
                             </div>

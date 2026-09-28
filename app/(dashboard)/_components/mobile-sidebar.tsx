@@ -6,10 +6,10 @@ import { Sidebar } from "./sidebar";
 export const MobileSidebar = () => {
   return (
     <Sheet>
-      <SheetTrigger className="md:hidden pr-4 hover:opacity-80 transition">
-        <Menu className="h-7 w-7 text-foreground/80" />
+      <SheetTrigger className="md:hidden pr-4 hover:opacity-70 transition">
+        <Menu className="h-6 w-6 text-muted-foreground" />
       </SheetTrigger>
-      <SheetContent side="left" className="p-0 w-72 bg-white">
+      <SheetContent side="left" className="p-0 w-72 bg-background">
         <SheetTitle>
           <VisuallyHidden>Main Navigation</VisuallyHidden>
         </SheetTitle>

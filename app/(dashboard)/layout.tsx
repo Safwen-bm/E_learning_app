@@ -15,10 +15,7 @@ export default function DashboardLayout({
 
       {/* Main column: Navbar + Content */}
       <div className="flex flex-1 flex-col overflow-hidden">
-        {/* Fixed Navbar */}
-        <header className="border-b border-border/40 bg-background/80 backdrop-blur-xl">
-          <Navbar />
-        </header>
+        <Navbar />
 
         {/* Scrollable main content with padding */}
         <main className="flex-1 overflow-y-auto">

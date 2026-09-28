@@ -4,80 +4,105 @@ import { NextResponse } from "next/server";
 
 import { db } from "@/lib/db";
 
-// Initialize Mux
 const mux = new Mux({
     tokenId: process.env.MUX_TOKEN_ID!,
     tokenSecret: process.env.MUX_TOKEN_SECRET!,
 });
 
-const { video } = mux; // Use lowercase 'video'
+const { video } = mux;
+
+type RouteParams = {
+    params: Promise<{
+        courseId: string;
+        chapterId: string;
+    }>;
+};
 
 export async function DELETE(
     req: Request,
-    { params }: { params: { courseId: string; chapterId: string } }
+    { params }: RouteParams
 ) {
     try {
         const { userId } = await auth();
+        const { courseId, chapterId } = await params;
 
         if (!userId) {
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        if (!params?.courseId || !params?.chapterId) {
+        if (!courseId || !chapterId) {
             return new NextResponse("Invalid parameters", { status: 400 });
         }
 
-        // Check ownership
         const ownCourse = await db.course.findUnique({
-            where: { id: params.courseId, userId },
+            where: {
+                id: courseId,
+                userId,
+            },
         });
 
         if (!ownCourse) {
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        // Find the chapter to delete
         const chapter = await db.chapter.findUnique({
-            where: { id: params.chapterId, courseId: params.courseId },
+            where: {
+                id: chapterId,
+                courseId,
+            },
         });
 
         if (!chapter) {
             return new NextResponse("Not Found", { status: 404 });
         }
 
-        // Delete Mux asset if it exists
-        if (chapter.videoUrl) {
-            const existingMuxData = await db.muxData.findFirst({
-                where: { chapterId: params.chapterId },
-            });
+        const existingMuxData = await db.muxData.findFirst({
+            where: {
+                chapterId,
+            },
+        });
 
-            if (existingMuxData) {
-                try {
-                    await video.assets.delete(existingMuxData.assetId); // Corrected method
-                    await db.muxData.delete({
-                        where: { id: existingMuxData.id },
-                    });
-                } catch (muxError) {
+        if (existingMuxData) {
+            try {
+                await video.assets.delete(existingMuxData.assetId);
+            } catch (muxError: any) {
+                if (muxError?.statusCode !== 404 && muxError?.status !== 404) {
                     console.error("Error deleting Mux asset:", muxError);
-                    return new NextResponse("Error deleting video asset", { status: 500 });
+                    return new NextResponse(
+                        "Error deleting video asset",
+                        { status: 500 }
+                    );
                 }
             }
+
+            await db.muxData.delete({
+                where: {
+                    id: existingMuxData.id,
+                },
+            });
         }
 
-        // Delete the chapter
         const deletedChapter = await db.chapter.delete({
-            where: { id: params.chapterId },
+            where: {
+                id: chapterId,
+            },
         });
 
-        // Update course publishing status
-        const isPublishedChaptersInCourse = await db.chapter.findMany({
-            where: { courseId: params.courseId, isPublished: true },
+        const publishedChapters = await db.chapter.findMany({
+            where: {
+                courseId,
+                isPublished: true,
+            },
         });
 
-        if (!isPublishedChaptersInCourse.length) {
+        if (!publishedChapters.length) {
             await db.course.update({
-                where: { id: params.courseId },
-                data: { isPublished: false },
+                where: {
+                    id: courseId,
+                },
+                data: {
+                    isPublished: false,
+                },
             });
         }
 
@@ -90,63 +115,87 @@ export async function DELETE(
 
 export async function PATCH(
     req: Request,
-    { params }: { params: { courseId: string; chapterId: string } },
+    { params }: RouteParams
 ) {
     try {
         const { userId } = await auth();
+        const { courseId, chapterId } = await params;
+
         const { isPublished, ...values } = await req.json();
 
         if (!userId) {
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        if (!params?.courseId || !params?.chapterId) {
+        if (!courseId || !chapterId) {
             return new NextResponse("Invalid parameters", { status: 400 });
         }
 
-        // Check ownership
         const ownCourse = await db.course.findUnique({
-            where: { id: params.courseId, userId },
+            where: {
+                id: courseId,
+                userId,
+            },
         });
 
         if (!ownCourse) {
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        // Update chapter
         const chapter = await db.chapter.update({
-            where: { id: params.chapterId, courseId: params.courseId },
-            data: { ...values },
+            where: {
+                id: chapterId,
+                courseId,
+            },
+            data: {
+                ...values,
+                ...(isPublished !== undefined && { isPublished }),
+            },
         });
 
-        // If videoUrl is updated, delete old Mux asset and create a new one
         if (values.videoUrl) {
             const existingMuxData = await db.muxData.findFirst({
-                where: { chapterId: params.chapterId },
+                where: {
+                    chapterId,
+                },
             });
 
             if (existingMuxData) {
                 try {
-                    await video.assets.delete(existingMuxData.assetId); // Corrected method
-                    await db.muxData.delete({
-                        where: { id: existingMuxData.id },
-                    });
-                } catch (muxError) {
-                    console.error("Error deleting Mux asset:", muxError);
-                    return new NextResponse("Error deleting video asset", { status: 500 });
+                    await video.assets.delete(existingMuxData.assetId);
+                } catch (muxError: any) {
+                    if (
+                        muxError?.statusCode !== 404 &&
+                        muxError?.status !== 404
+                    ) {
+                        console.error(
+                            "Error deleting Mux asset:",
+                            muxError
+                        );
+
+                        return new NextResponse(
+                            "Error deleting video asset",
+                            { status: 500 }
+                        );
+                    }
                 }
+
+                await db.muxData.delete({
+                    where: {
+                        id: existingMuxData.id,
+                    },
+                });
             }
 
-            // Create new Mux asset
             const asset = await video.assets.create({
                 input: values.videoUrl,
-                playback_policy: ["public"], // Use an array
+                playback_policy: ["public"],
                 test: false,
             });
 
             await db.muxData.create({
                 data: {
-                    chapterId: params.chapterId,
+                    chapterId,
                     assetId: asset.id,
                     playbackId: asset.playback_ids?.[0]?.id,
                 },

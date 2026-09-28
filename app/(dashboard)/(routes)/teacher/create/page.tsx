@@ -13,7 +13,6 @@ import {
     FormControl,
     FormDescription,
     FormField,
-    FormLabel,
     FormMessage,
     FormItem,
 } from "@/components/ui/form";
@@ -52,7 +51,7 @@ const CreatePage = () => {
                 <h1 className="text-2xl">
                     Name your course
                 </h1>
-                <p  className="text-sm text-slate-600">
+                <p  className="text-sm text-muted-foreground">
                     What would you like to name your course? Don&apos;t worry,
                     you can change this later.
                 </p>
@@ -82,7 +81,7 @@ const CreatePage = () => {
                           )}
                         />
                         <div className="flex items-center gap-x-2">
-                            <Link href="/">
+                            <Link href="/dashboard">
                             <Button 
                                type="button"
                                variant="ghost"

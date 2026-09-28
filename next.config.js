@@ -1,11 +1,9 @@
 module.exports = {
-  reactStrictMode: true, // Optional but helps with debugging React issues
+  reactStrictMode: true,
   images: {
     remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'utfs.io',
-      },
+      { protocol: 'https', hostname: 'utfs.io' },
+      { protocol: 'https', hostname: '*.ufs.sh' },
     ],
   },
 };

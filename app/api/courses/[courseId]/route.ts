@@ -5,17 +5,18 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { isTeacher } from "@/lib/teacher";
 
-const { Video } = new Mux(
-    process.env.MUX_TOKEN_ID!,
-    process.env.MUX_TOKEN_SECRET!,
-);
+const mux = new Mux({
+    tokenId: process.env.MUX_TOKEN_ID!,
+    tokenSecret: process.env.MUX_TOKEN_SECRET!,
+});
 
 export async function DELETE(
     req: Request,
-    { params }: { params: { courseId: string } }
+    { params }: { params: Promise<{ courseId: string }> }
 ) {
     try {
         const { userId } = await auth();
+        const { courseId } = await params;
 
         if (!userId || !isTeacher(userId)) {
             return new NextResponse("Unauthorized", { status: 401 });
@@ -23,7 +24,7 @@ export async function DELETE(
 
         const course = await db.course.findUnique({
             where: {
-                id: params.courseId,
+                id: courseId,
                 userId,
             },
             include: {
@@ -41,13 +42,25 @@ export async function DELETE(
 
         for (const chapter of course.chapters) {
             if (chapter.muxData?.assetId) {
-                await Video.assets.del(chapter.muxData.assetId); // Fixed capitalization
+                try {
+                    await mux.video.assets.delete(chapter.muxData.assetId);
+                } catch (error: any) {
+                    // If the Mux asset is already gone, that's fine.
+                    // We can still delete the course from our database.
+                    if (error?.statusCode === 404 || error?.status === 404) {
+                        console.warn(
+                            `[COURSE_ID_DELETE] Mux asset ${chapter.muxData.assetId} was already deleted.`
+                        );
+                    } else {
+                        throw error;
+                    }
+                }
             }
         }
 
         const deletedCourse = await db.course.delete({
             where: {
-                id: params.courseId,
+                id: courseId,
             },
         });
 
@@ -60,18 +73,16 @@ export async function DELETE(
 
 export async function PATCH(
     req: Request,
-    { params }: { params: { courseId: string } }
+    { params }: { params: Promise<{ courseId: string }> }
 ) {
     try {
         const { userId } = await auth();
-        const { courseId } = params;
+        const { courseId } = await params;
         const values = await req.json();
 
         if (!userId || !isTeacher(userId)) {
             return new NextResponse("Unauthorized", { status: 401 });
         }
-
-        // Optional: Validate the `values` object here for security
 
         const course = await db.course.update({
             where: {
@@ -85,7 +96,7 @@ export async function PATCH(
 
         return NextResponse.json(course);
     } catch (error) {
-        console.error("[COURSE_ID_PATCH]", error); // More specific error message
+        console.error("[COURSE_ID_PATCH]", error);
         return new NextResponse("Internal Error", { status: 500 });
     }
 }

@@ -5,29 +5,30 @@ import { db } from "@/lib/db";
 
 export async function PATCH(
     req: Request,
-    { params }: { params: { courseId: string } }
+    { params }: { params: Promise<{ courseId: string }> }
 ) {
     try {
+        const { courseId } = await params;
         const { userId } = await auth();
 
         if (!userId) {
-            return new NextResponse("Unauthorized", { status: 401});
+            return new NextResponse("Unauthorized", { status: 401 });
         }
 
         const course = await db.course.findUnique({
             where: {
-                id: params.courseId,
+                id: courseId,
                 userId,
             },
         });
 
         if (!course) {
-            return new NextResponse("Not found", { status: 404});
+            return new NextResponse("Not found", { status: 404 });
         }
 
         const unpublishedCourse = await db.course.update({
             where: {
-                id: params.courseId,
+                id: courseId,
                 userId,
             },
             data: {

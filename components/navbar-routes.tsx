@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { useAuth, UserButton } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
 import { LogOut, LayoutDashboard } from "lucide-react";
@@ -23,28 +24,27 @@ export const NavbarRoutes = () => {
       <div className="flex-1 flex justify-center max-w-2xl">
         {isSearchPage && (
           <div className="hidden md:block w-full">
-            <SearchInput />
+            <Suspense fallback={null}>
+              <SearchInput />
+            </Suspense>
           </div>
         )}
       </div>
 
       {/* Right side: Actions + User */}
-      <div className="flex items-center gap-x-5">
+      <div className="flex items-center gap-x-4">
         {isTeacherPage || isCoursePage ? (
-          <Link href="/">
-            <Button variant="ghost" size="sm" className="hover:bg-accent/50">
+          <Link href="/dashboard">
+            <Button variant="ghost" size="sm">
               <LogOut className="h-4 w-4 mr-2" />
               Exit
             </Button>
           </Link>
         ) : isTeacher(userId) ? (
           <Link href="/teacher/courses">
-            <Button 
-              size="sm" 
-              className="bg-primary hover:bg-primary/90 shadow-md hover:shadow-primary/20 transition-all hover:scale-105"
-            >
+            <Button size="sm">
               <LayoutDashboard className="h-4 w-4 mr-2" />
-              Teacher Mode
+              Teacher mode
             </Button>
           </Link>
         ) : null}

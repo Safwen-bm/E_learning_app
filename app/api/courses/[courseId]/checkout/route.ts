@@ -7,9 +7,10 @@ import { stripe } from "@/lib/stripe";
 
 export async function POST(
     req: Request,
-    { params }: { params: { courseId: string } }
+    { params }: { params: Promise<{ courseId: string }> }
 ) {
     try {
+        const { courseId } = await params;
         const user = await currentUser();
 
         if (!user || !user.id || !user.emailAddresses?.[0]?.emailAddress) {
@@ -18,7 +19,7 @@ export async function POST(
 
         const course = await db.course.findUnique({
             where: {
-                id: params.courseId,
+                id: courseId,
                 isPublished: true,
             }
         });
@@ -27,7 +28,7 @@ export async function POST(
             where: {
                 userId_courseId: {
                     userId: user.id,
-                    courseId: params.courseId,
+                    courseId: courseId,
                 }
             }
         });
@@ -53,7 +54,7 @@ export async function POST(
                 }
             }
         ];
-        
+
         let stripeCustomer = await db.stripeCustomer.findUnique({
             where: {
                 userId: user.id,
@@ -88,7 +89,7 @@ export async function POST(
             }
         });
 
-        return NextResponse.json({url: session.url });
+        return NextResponse.json({ url: session.url });
     } catch (error) {
         console.log("[COURSE_ID_CHECKOUT]", error);
         return new NextResponse("Internal Error", { status: 500 });

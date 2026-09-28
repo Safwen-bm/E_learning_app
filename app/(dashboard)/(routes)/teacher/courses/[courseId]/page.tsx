@@ -18,9 +18,9 @@ import { Actions } from "./_components/actions";
 const CourseIdPage = async ({
     params,
 }: {
-    params: { courseId: string };
+    params: Promise<{ courseId: string }>;
 }) => {
-    const { courseId } = params;
+    const { courseId } = await params;
 
     const { userId } = await auth();
     if (!userId) {
@@ -29,7 +29,7 @@ const CourseIdPage = async ({
 
     const course = await db.course.findUnique({
         where: {
-            id: params.courseId,
+            id: courseId,
             userId
         },
         include: {
@@ -85,13 +85,13 @@ const CourseIdPage = async ({
                         <h1 className="text-2xl font-medium">
                             Course setup
                         </h1>
-                        <span className="text-sm text-slate-700">
+                        <span className="text-sm text-muted-foreground">
                             Complete all fields {completionText}
                         </span>
                     </div>
                     <Actions 
                       disabled={!isComplete}
-                      courseId={params.courseId}
+                      courseId={courseId}
                       isPublished={course.isPublished}
                     />
                 </div>

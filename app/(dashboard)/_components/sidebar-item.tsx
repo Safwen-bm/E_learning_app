@@ -5,9 +5,9 @@ import { cn } from "@/lib/utils";
 import { LucideIcon } from "lucide-react";
 
 interface SidebarItemProps {
-    icon: LucideIcon;  // ← Only LucideIcon (all your icons are from lucide-react)
-    label: string; 
-    href: string; 
+    icon: LucideIcon;
+    label: string;
+    href: string;
 }
 
 export const SidebarItem = ({
@@ -15,8 +15,8 @@ export const SidebarItem = ({
     label,
     href,
 }: SidebarItemProps) => {
-    const pathname = usePathname(); 
-    const router = useRouter(); 
+    const pathname = usePathname();
+    const router = useRouter();
 
     const isActive =
         (pathname === "/" && href === "/") ||
@@ -24,7 +24,7 @@ export const SidebarItem = ({
         pathname?.startsWith(`${href}/`);
 
     const onClick = () => {
-        router.push(href); 
+        router.push(href);
     };
 
     return (
@@ -32,20 +32,13 @@ export const SidebarItem = ({
             onClick={onClick}
             type="button"
             className={cn(
-                "flex items-center gap-x-3 text-foreground/70 text-md font-medium pl-6 pr-8 py-4 rounded-xl transition-all duration-300",
-                "hover:text-foreground hover:bg-accent/50 hover:shadow-md hover:scale-105",
-                isActive && "text-primary bg-primary/10 shadow-lg scale-105 border-l-4 border-primary"
+                "flex items-center gap-x-3 w-full text-sm font-medium text-muted-foreground pl-3 pr-3 py-2.5 rounded-md border-l-2 border-transparent transition-colors",
+                "hover:text-foreground hover:bg-accent/60",
+                isActive && "text-foreground bg-accent border-[hsl(var(--ring))]"
             )}
         >
-            <div className="flex items-center gap-x-3">
-                <div className={cn(
-                    "transition-colors",
-                    isActive ? "text-primary" : ""
-                )}>
-                    <Icon className="h-5 w-5" /> 
-                </div>
-                <span className="tracking-wide">{label}</span>
-            </div>
+            <Icon className="h-4 w-4 shrink-0" />
+            <span>{label}</span>
         </button>
     );
 };

@@ -11,10 +11,8 @@ import { ChapterAccessForm } from "./_components/chapter-access-form";
 import { ChapterVideoForm } from "./_components/chapter-video-form";
 import { ChapterActions } from "./_components/chapter-actions";
 
-const ChapterIdPage = async (props: { params: { courseId: string; chapterId: string } }) => {
-    const params = await props.params;
-    const courseId = params.courseId;
-    const chapterId = params.chapterId;
+const ChapterIdPage = async (props: { params: Promise<{ courseId: string; chapterId: string }> }) => {
+    const { courseId, chapterId } = await props.params;
 
     const { userId } = await auth();
 
@@ -78,8 +76,8 @@ const ChapterIdPage = async (props: { params: { courseId: string; chapterId: str
                             </div>
                             <ChapterActions
                                 disabled={!isComplete}
-                                courseId={params.courseId}
-                                chapterId={params.chapterId}
+                                courseId={courseId}
+                                chapterId={chapterId}
                                 isPublished={chapter.isPublished}
                             />
                         </div>
@@ -96,13 +94,13 @@ const ChapterIdPage = async (props: { params: { courseId: string; chapterId: str
                             </div>
                             <ChapterTitleForm
                                 initialData={chapter}
-                                courseId={params.courseId}
-                                chapterId={params.chapterId}
+                                courseId={courseId}
+                                chapterId={chapterId}
                             />
                             <ChapterDescriptionForm
                                 initialData={chapter}
-                                courseId={params.courseId}
-                                chapterId={params.chapterId}
+                                courseId={courseId}
+                                chapterId={chapterId}
                             />
                         </div>
                         <div>
@@ -114,8 +112,8 @@ const ChapterIdPage = async (props: { params: { courseId: string; chapterId: str
                             </div>
                             <ChapterAccessForm
                                 initialData={chapter}
-                                courseId={params.courseId}
-                                chapterId={params.chapterId}
+                                courseId={courseId}
+                                chapterId={chapterId}
                             />
                         </div>
                     </div>
@@ -128,8 +126,8 @@ const ChapterIdPage = async (props: { params: { courseId: string; chapterId: str
                         </div>
                         <ChapterVideoForm
                             initialData={chapter}
-                            chapterId={params.chapterId}
-                            courseId={params.courseId}
+                            chapterId={chapterId}
+                            courseId={courseId}
                         />
                     </div>
                 </div>

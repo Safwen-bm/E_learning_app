@@ -52,6 +52,23 @@ const config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        // Landing page identity only ("chalkboard" theme).
+        // Kept separate from the shadcn tokens above so the dashboard is untouched.
+        marketing: {
+          bg: "#152C27",        // deep blackboard green
+          bgDeep: "#0E211D",    // darker panel / footer
+          chalk: "#ECEFE9",     // chalk-white text
+          chalkDim: "#B9C4BC",  // muted chalk (secondary text)
+          yellow: "#E8B84A",    // chalk-pastel accent
+          coral: "#D2685A",     // secondary accent
+          line: "rgba(236,239,233,0.12)", // hairline / board smudge
+          ink: "#16241F",         // dark text on light sections
+          panel: "#1E3B34",       // raised card on dark sections
+          mustardDeep: "#B9812E", // accent on light sections
+        },
+      },
+      fontFamily: {
+        display: ["var(--font-fraunces)", "serif"],
       },
       borderRadius: {
         lg: "var(--radius)",

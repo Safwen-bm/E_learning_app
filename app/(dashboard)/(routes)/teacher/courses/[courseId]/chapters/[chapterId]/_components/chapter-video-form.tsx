@@ -2,7 +2,7 @@
 
 import * as z from 'zod';
 import axios from 'axios';
-import MuxPlayer from "@mux/mux-player-react";
+import dynamic from "next/dynamic";
 import { Video, Pencil, PlusCircle } from 'lucide-react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
@@ -10,6 +10,10 @@ import { useRouter } from 'next/navigation';
 import { Chapter, MuxData  } from '@prisma/client';
 import { Button } from '@/components/ui/button';
 import FileUpload from '@/components/file-upload';
+
+const MuxPlayer = dynamic(() => import("@mux/mux-player-react"), {
+  ssr: false,
+});
 
 interface ChapterVideoFormProps {
   initialData: Chapter & { muxData?: MuxData | null };
@@ -94,7 +98,7 @@ export const ChapterVideoForm = ({
       )}
       {initialData.videoUrl && !isEditing && (
         <div className='text-xs text-muted-foreground mt-2'>
-          Videos can take a few minutes to upload. If you don't see your video, try refreshing the page.
+          Videos can take a few minutes to upload. If you don&apos;t see your video, try refreshing the page.
         </div>
       )}
     </div>

@@ -4,22 +4,23 @@ import { NextResponse } from "next/server";
 
 export async function PATCH(
     req: Request,
-    { params }: { params: { courseId: string; chapterId: string } }
+    { params }: { params: Promise<{ courseId: string; chapterId: string }> }
 ) {
     try {
+        const { courseId, chapterId } = await params;
         const { userId } = await auth();
 
         if (!userId) {
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        if (!params?.courseId || !params?.chapterId) {
+        if (!courseId || !chapterId) {
             return new NextResponse("Invalid parameters", { status: 400 });
         }
 
         const ownCourse = await db.course.findUnique({
             where: {
-                id: params.courseId,
+                id: courseId,
                 userId,
             },
         });
@@ -30,14 +31,14 @@ export async function PATCH(
 
         const chapter = await db.chapter.findUnique({
             where: {
-                id: params.chapterId,
-                courseId: params.courseId,
+                id: chapterId,
+                courseId: courseId,
             },
         });
 
         const muxData = await db.muxData.findUnique({
             where: {
-                chapterId: params.chapterId,
+                chapterId: chapterId,
             },
         });
              // || !chapter.videoUrl|| !chapter.description || !muxData
@@ -47,8 +48,8 @@ export async function PATCH(
 
         const publishedChapter = await db.chapter.update({
             where: {
-                id: params.chapterId,
-                courseId: params.courseId,
+                id: chapterId,
+                courseId: courseId,
             },
             data: {
                 isPublished: true,

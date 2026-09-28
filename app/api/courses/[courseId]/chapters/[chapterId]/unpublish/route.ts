@@ -4,22 +4,23 @@ import { NextResponse } from "next/server";
 
 export async function PATCH(
     req: Request,
-    { params }: { params: { courseId: string; chapterId: string } }
+    { params }: { params: Promise<{ courseId: string; chapterId: string }> }
 ) {
     try {
+        const { courseId, chapterId } = await params;
         const { userId } = await auth();
 
         if (!userId) {
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        if (!params?.courseId || !params?.chapterId) {
+        if (!courseId || !chapterId) {
             return new NextResponse("Invalid parameters", { status: 400 });
         }
 
         const ownCourse = await db.course.findUnique({
             where: {
-                id: params.courseId,
+                id: courseId,
                 userId,
             },
         });
@@ -30,8 +31,8 @@ export async function PATCH(
 
         const unpublishedChapter = await db.chapter.update({
             where: {
-                id: params.chapterId,
-                courseId: params.courseId,
+                id: chapterId,
+                courseId: courseId,
             },
             data: {
                 isPublished: false,
@@ -40,7 +41,7 @@ export async function PATCH(
 
         const publishedChaptersInCourse = await db.chapter.findMany({
             where: {
-                courseId: params.courseId,
+                courseId: courseId,
                 isPublished: true,
             },
         });
@@ -48,7 +49,7 @@ export async function PATCH(
         if (publishedChaptersInCourse.length === 0) {
             await db.course.update({
                 where: {
-                    id: params.courseId,
+                    id: courseId,
                 },
                 data: {
                     isPublished: false,

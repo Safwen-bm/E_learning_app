@@ -1,14 +1,14 @@
 "use client";
 
 import qs from "query-string";
-import { IconType } from "react-icons";
+import { LucideIcon } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 interface CategoryItemProps {
     label: string;
     value?: string;
-    icon?: IconType;
+    icon?: LucideIcon;
     isSelected?: boolean;
 };
 
@@ -42,15 +42,17 @@ export const CategoryItem = ({
     return (
         <button
             onClick={onClick}
-            className={cn(
-                "flex items-center gap-x-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 whitespace-nowrap",
-                "bg-background border border-border hover:border-primary/50 hover:bg-accent/50",
-                isSelected && "bg-primary/10 text-primary border-primary shadow-md"
-            )}
             type="button"
+            aria-pressed={isSelected}
+            className={cn(
+                "inline-flex h-9 shrink-0 items-center gap-x-2 whitespace-nowrap rounded-full border px-4 text-sm font-medium transition-colors",
+                isSelected
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-border bg-card text-muted-foreground hover:border-foreground/20 hover:bg-accent hover:text-foreground"
+            )}
         >
-            {Icon && <Icon size={18} className={cn(isSelected && "text-primary")} />}
+            {Icon && <Icon className="h-4 w-4" />}
             <span>{label}</span>
         </button>
     );
-}
+};
