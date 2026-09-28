@@ -1,24 +1,20 @@
-/*
-  Warnings:
+-- CreateTable
+CREATE TABLE `Course` (
+    `id` VARCHAR(191) NOT NULL,
+    `userId` VARCHAR(191) NOT NULL,
+    `title` TEXT NOT NULL,
+    `description` TEXT NULL,
+    `imageUrl` TEXT NULL,
+    `price` DOUBLE NULL,
+    `isPublished` BOOLEAN NOT NULL DEFAULT false,
+    `categoryId` VARCHAR(191) NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
 
-  - The primary key for the `course` table will be changed. If it partially fails, the table could be left without primary key constraint.
-  - Added the required column `updatedAt` to the `Course` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `userId` to the `Course` table without a default value. This is not possible if the table is not empty.
-
-*/
--- AlterTable
-ALTER TABLE `course` DROP PRIMARY KEY,
-    ADD COLUMN `categoryId` VARCHAR(191) NULL,
-    ADD COLUMN `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    ADD COLUMN `description` TEXT NULL,
-    ADD COLUMN `imageUrl` TEXT NULL,
-    ADD COLUMN `isPublished` BOOLEAN NOT NULL DEFAULT false,
-    ADD COLUMN `price` DOUBLE NULL,
-    ADD COLUMN `updatedAt` DATETIME(3) NOT NULL,
-    ADD COLUMN `userId` VARCHAR(191) NOT NULL,
-    MODIFY `id` VARCHAR(191) NOT NULL,
-    MODIFY `title` TEXT NOT NULL,
-    ADD PRIMARY KEY (`id`);
+    INDEX `Course_categoryId_idx`(`categoryId`),
+    FULLTEXT INDEX `Course_title_idx`(`title`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `Category` (
@@ -109,9 +105,3 @@ CREATE TABLE `StripeCustomer` (
     UNIQUE INDEX `StripeCustomer_StripeCustomerId_key`(`StripeCustomerId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateIndex
-CREATE INDEX `Course_categoryId_idx` ON `Course`(`categoryId`);
-
--- CreateIndex
-CREATE FULLTEXT INDEX `Course_title_idx` ON `Course`(`title`);
