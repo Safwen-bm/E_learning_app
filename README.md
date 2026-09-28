@@ -1,68 +1,69 @@
 # AcademyX
 
-**Full-stack e-learning platform with course creation, video streaming, and paid enrollment.**
+A full-stack e-learning platform built with Next.js. Instructors publish courses with chaptered video lessons, students track their progress chapter by chapter, and purchases are handled through Stripe.
 
-AcademyX lets teachers build and publish multi-chapter video courses, and students purchase and track progress through them — with a full teacher dashboard for course management.
+## Features
 
----
+- Public landing page, with courses browsable before signing in
+- Course creation for instructors: title, description, image, category, price, chapters
+- Video lessons via Mux, with per-chapter progress tracking
+- File attachments per course via UploadThing
+- Purchases and checkout via Stripe
+- Authentication via Clerk
 
-## 🚀 What it does
+## Tech stack
 
-- **Teacher side**: create courses, add chapters, upload videos, attach downloadable resources, reorder chapters via drag-and-drop, publish/unpublish
-- **Student side**: browse and purchase courses, watch chapter videos, track completion progress per chapter and per course
-- Role-based access (teacher vs. student) via Clerk authentication
-- Video upload and adaptive streaming through Mux
-- Rich text course/chapter descriptions via a WYSIWYG editor
-- Stripe checkout for course purchases
-- File uploads (images, PDFs, attachments) via UploadThing/Cloudinary
-- Teacher analytics dashboard (revenue, sales) with charts
+- **Framework:** Next.js 15 (App Router)
+- **Database:** MySQL, via Prisma ORM
+- **Auth:** Clerk
+- **Video:** Mux
+- **File uploads:** UploadThing
+- **Payments:** Stripe
+- **Styling:** Tailwind CSS, shadcn/ui
 
----
+## Architecture
 
-## 🧱 Tech Stack
+```mermaid
+flowchart TD
+    User["Student / Instructor browser"]
 
-| Layer | Technology |
-|---|---|
-| Framework | Next.js 15 (App Router), TypeScript |
-| UI | Tailwind CSS, shadcn/ui, Radix UI |
-| Auth | Clerk |
-| Database | PostgreSQL, Prisma ORM |
-| Video | Mux (upload, encoding, streaming player) |
-| Payments | Stripe |
-| File Uploads | UploadThing, Cloudinary |
-| Editor | TipTap / React Quill |
-| Charts | Recharts |
+    subgraph Vercel["Next.js app (Vercel)"]
+        Pages["Pages & Server Components"]
+        API["API routes"]
+    end
 
----
+    DB[("MySQL database")]
+    Clerk["Clerk (auth)"]
+    Mux["Mux (video hosting & playback)"]
+    UT["UploadThing (images & attachments)"]
+    Stripe["Stripe (payments)"]
 
-## 🏗️ Architecture
+    User -->|HTTPS| Pages
+    User -->|HTTPS| API
 
-Single Next.js app using the App Router, with route groups separating concerns:
+    Pages -->|Prisma| DB
+    API -->|Prisma| DB
+    Pages -.->|session| Clerk
+    API -.->|verify user| Clerk
 
+    API -->|create/delete asset| Mux
+    User -->|stream video| Mux
+
+    API -->|upload callback| UT
+    User -->|direct upload| UT
+
+    API -->|checkout, webhook| Stripe
 ```
-app/
-├── (dashboard)/    # Teacher dashboard — course management, analytics
-├── (course)/       # Student-facing course player — chapters, video, progress
-└── api/            # Route handlers — uploads, webhooks (Stripe, Mux)
+
+## Getting started locally
+
+```bash
+npm install
+cp .env.example .env   # fill in your own keys
+npx prisma migrate dev
+npm run dev
 ```
 
-Server Components handle data fetching directly via Prisma; Server Actions handle mutations (progress updates, course publishing). Stripe and Mux webhooks keep purchase status and video processing state in sync with the database.
+## License
 
----
-
-## 📄 License
-
-**All rights reserved.**
-
-This project and its source code are proprietary. No part of this repository may be copied, modified, distributed, or used in any form without explicit written permission from the author.
-
-© Safwen Ben Mabrouk
-
----
-
-## 📬 Contact
-
-**Safwen Ben Mabrouk** — Full-Stack Software Engineer
-- Email: safwenbenmabrouk@gmail.com
-- LinkedIn: [linkedin.com/in/safwen-ben-mabrouk](https://linkedin.com/in/safwen-ben-mabrouk)
-- GitHub: [@Safwen-bm](https://github.com/Safwen-bm)
+MIT, see [LICENSE](./LICENSE).
