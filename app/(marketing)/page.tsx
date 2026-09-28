@@ -7,6 +7,8 @@ import { PopularCourses } from "./_components/popular-courses";
 import { CategoryBrowser } from "./_components/category-browser";
 import { InstructorCta } from "./_components/instructor-cta";
 
+export const dynamic = "force-dynamic";
+
 const MarketingPage = async () => {
   const { courses, popular, categories } = await getLandingCourses();
 
