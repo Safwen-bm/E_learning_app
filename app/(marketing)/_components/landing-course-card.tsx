@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { SafeImage } from "@/components/safe-image";
 import Link from "next/link";
 import { BookOpen } from "lucide-react";
 
@@ -36,12 +36,13 @@ export const LandingCourseCard = ({
                 )}
             >
                 {course.imageUrl ? (
-                    <Image
+                    <SafeImage
                         fill
                         src={course.imageUrl}
                         alt={course.title}
                         sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
                         className="object-cover"
+                        fallbackClassName={muted}
                     />
                 ) : (
                     <div className="flex h-full items-center justify-center">

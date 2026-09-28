@@ -92,12 +92,20 @@ export const FooterLanding = () => {
             </ul>
           </div>
         </div>
-
         <div className="border-t border-marketing-line py-6 text-xs">
-          <p>
-            &copy; {new Date().getFullYear()} AcademyX. Designed and built by
-            Safwen Ben Mabrouk. All rights reserved.
-          </p>
+          <div className="grid gap-2 md:grid-cols-3 md:items-center">
+            <p className="text-left">
+              &copy; {new Date().getFullYear()} AcademyX.
+            </p>
+
+            <p className="text-left md:text-center">
+              Designed and built by Safwen Ben Mabrouk.
+            </p>
+
+            <p className="text-left md:text-right">
+              All rights reserved.
+            </p>
+          </div>
         </div>
       </div>
     </footer>

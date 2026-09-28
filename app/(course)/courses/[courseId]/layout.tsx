@@ -10,7 +10,7 @@ const CourseLayout = async ({
   params,
 }: {
   children: React.ReactNode;
-  params: Promise<{ courseId: string }>;  // ← Change type to Promise
+  params: Promise<{ courseId: string }>; 
 }) => {
   const { userId } = await auth();
   if (!userId) return redirect("/");

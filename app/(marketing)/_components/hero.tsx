@@ -14,7 +14,7 @@ export const Hero = () => {
           priority
           quality={70}
           sizes="100vw"
-          className="object-cover object-center opacity-55 blur-[2px]"
+          className="object-cover object-center opacity-55"
         />
         {/* Even tint over the whole image */}
         <div className="absolute inset-0 bg-marketing-bg/40 md:bg-marketing-bg/25" />

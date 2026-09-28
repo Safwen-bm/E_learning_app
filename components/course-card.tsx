@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { SafeImage } from "@/components/safe-image";
 import Link from "next/link";
 import { BookOpen, CheckCircle2 } from "lucide-react";
 
@@ -37,7 +37,7 @@ export const CourseCard = ({
                 {/* Thumbnail */}
                 <div className="relative aspect-video overflow-hidden bg-muted">
                     {imageUrl ? (
-                        <Image
+                        <SafeImage
                             fill
                             src={imageUrl}
                             alt={title}

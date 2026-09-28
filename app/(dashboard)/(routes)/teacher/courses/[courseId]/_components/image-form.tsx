@@ -2,16 +2,14 @@
 
 import React from "react";
 import * as z from "zod";
-import { auth } from "@clerk/nextjs/server";
 import axios from 'axios';
 import { Button } from "@/components/ui/button";
 import { Pencil, PlusCircle, ImageIcon } from "lucide-react";
 import toast from "react-hot-toast";
-import Image from "next/image";
 import { Course } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import FileUpload from "@/components/file-upload";
-import { db } from "@/lib/db";
+import { SafeImage } from "@/components/safe-image";
 
 type Props = {
   initialData: Course
@@ -78,11 +76,12 @@ export const ImageForm = ({
           </div>
         ) : (
           <div className="relative aspect-video mt-2">
-            <Image
+            <SafeImage
               src={initialData.imageUrl}
               alt="Uploaded Image"
               fill
               className="object-cover rounded-md"
+              fallbackClassName="rounded-md bg-slate-200"
             />
           </div>
         ))}

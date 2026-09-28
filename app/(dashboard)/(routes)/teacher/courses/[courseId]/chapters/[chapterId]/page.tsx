@@ -1,6 +1,7 @@
 import { IconBadge } from "@/components/icon-badge";
 import { Banner } from "@/components/banner";
 import { db } from "@/lib/db";
+import { mux } from "@/lib/mux";
 import { auth } from "@clerk/nextjs/server";
 import { ArrowLeft, Eye, LayoutDashboard, Video } from "lucide-react";
 import Link from "next/link";
@@ -32,6 +33,19 @@ const ChapterIdPage = async (props: { params: Promise<{ courseId: string; chapte
 
     if (!chapter) {
         return redirect("/");
+    }
+
+        // Real status of the video on the Mux side (preparing, ready or errored).
+    // null means we could not find out, so the form keeps its normal behavior.
+    let assetStatus: "preparing" | "ready" | "errored" | "missing" | null = null;
+
+    if (chapter.muxData?.assetId) {
+        try {
+            const asset = await mux.video.assets.retrieve(chapter.muxData.assetId);
+            assetStatus = asset.status;
+        } catch (error: any) {
+            assetStatus = error?.status === 404 ? "missing" : null;
+        }
     }
 
     const requireFields = [
@@ -128,6 +142,7 @@ const ChapterIdPage = async (props: { params: Promise<{ courseId: string; chapte
                             initialData={chapter}
                             chapterId={chapterId}
                             courseId={courseId}
+                            assetStatus={assetStatus}
                         />
                     </div>
                 </div>
